@@ -14,6 +14,7 @@ export async function generateText(messages: Message[]): Promise<ApiResponse> {
       ],
       model: 'evil',
       temperature: 0.7,
+      seed: -1 ,
       max_tokens: 120
     };
 
