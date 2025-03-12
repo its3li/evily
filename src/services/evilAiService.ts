@@ -13,7 +13,7 @@ export async function generateText(messages: Message[]): Promise<ApiResponse> {
         ...messages.slice(-4) // Keep last 2 exchanges
       ],
       model: 'evil',
-      temperature: 0.7,
+      temperature: 0.6,
       seed: -1 ,
       max_tokens: 120
     };
