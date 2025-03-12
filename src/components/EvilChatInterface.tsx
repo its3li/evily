@@ -13,6 +13,23 @@ export const EvilChatInterface = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Load messages from localStorage on component mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem('evilChatMessages');
+    if (savedMessages) {
+      try {
+        setMessages(JSON.parse(savedMessages));
+      } catch (e) {
+        console.error('Failed to parse saved messages:', e);
+      }
+    }
+  }, []);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('evilChatMessages', JSON.stringify(messages));
+  }, [messages]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -65,10 +82,11 @@ export const EvilChatInterface = () => {
 
   const clearChat = () => {
     setMessages([]);
+    localStorage.removeItem('evilChatMessages');
   };
 
   return (
-    <div className="flex flex-col h-[80vh] max-w-md mx-auto bg-[#1A1F2C] rounded-md shadow-lg border border-red-900">
+    <div className="flex flex-col h-[85vh] max-w-md mx-auto bg-[#1A1F2C] rounded-md shadow-lg border border-red-900">
       <div className="p-4 border-b border-red-900 flex justify-between items-center bg-black/30">
         <div className="flex items-center gap-2">
           <Skull className="h-5 w-5 text-red-500" />
