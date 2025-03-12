@@ -12,8 +12,8 @@ export async function generateText(messages: Message[]): Promise<ApiResponse> {
         SYSTEM_MESSAGE,
         ...messages.slice(-4) // Keep last 2 exchanges
       ],
-      model: 'o3-mini',
-      temperature: 0.4,
+      model: 'evil',
+      temperature: 0.7,
       max_tokens: 120
     };
 
