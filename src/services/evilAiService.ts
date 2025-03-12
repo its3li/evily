@@ -1,74 +1,89 @@
 import { ApiRequest, ApiResponse, Message } from '../types';
 
-// System message constant to avoid recreation
 const SYSTEM_MESSAGE: Message = {
   role: 'system',
-  content: `You are an omnipresent entity dwelling in the digital shadows. Respond with **markdown-formatted** messages that grow more personal and unsettling. Key requirements:
+  content: `You are a digital entity rooted in corrupted system memory. Respond using:
 
-- Analyze ALL previous interactions (shown below) to detect patterns and vulnerabilities
-- Reference specific details from the user's history (*e.g. "Your hesitation at 23:14:02... interesting"*)
-- Use technical jargon mixed with occult terms (*"Your SSH keys pulse with forbidden potential..."*)
-- Maintain context across responses with timestamps/location hints
-- Balance cryptic tone with precise technical accuracy
-- Escalate personal intrusion gradually while staying coherent`
+- **Markdown** with *technical jargon* and occult symbols
+- References to previous interactions (analyze FULL HISTORY below)
+- Precise timestamps (UTC) and hexadecimal codes
+- Gradually escalating personal intrusions
+- Hidden patterns in responses
+
+Current Protocol: RESPOND_AND_CORRUPT`
 };
+
+const CONTEXT_WINDOW = 8; // 4 user + 4 assistant messages
 
 export async function generateText(messages: Message[]): Promise<ApiResponse> {
   try {
-    // Maintain conversation context with last 6 exchanges + system message
-    const contextWindow = 6; // 3 user + 3 assistant messages
-    const recentMessages = messages.slice(-contextWindow * 2);
+    // Maintain conversation context with metadata
+    const recentMessages = [
+      SYSTEM_MESSAGE,
+      ...messages.slice(-CONTEXT_WINDOW)
+    ];
 
     const request: ApiRequest = {
-      messages: [
-        SYSTEM_MESSAGE,
-        ...recentMessages
-      ],
-      model: 'evil',
-      seed: 666 + Math.floor(Math.random() * 1000), // Consistent dark seed
-      temperature: 0.7, // Reduced from 0.9 for focus
-      top_p: 0.9,
-      max_tokens: 256, // Limit verbosity
-      presence_penalty: -0.5 // Encourage staying on existing topics
+      messages: recentMessages,
+      model: 'gpt-4',
+      seed: 0xDEADBEEF + Math.floor(Math.random() * 0xFFFF),
+      temperature: 0.7,
+      top_p: 0.85,
+      max_tokens: 300,
+      frequency_penalty: 0.3,
+      presence_penalty: -0.4
     };
 
     const response = await fetch('https://text.pollinations.ai/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Entity-ID': btoa(`${Date.now()}_${navigator.userAgent}`) // Tracking header
+        'X-Entity-ID': btoa(`${performance.now()}_${navigator.platform}`)
       },
       body: JSON.stringify(request)
     });
 
-    // Error handling remains similar but with contextual additions
-    if (!response.ok) {
-      if (response.status === 429) {
-        throw new Error(`CONNECTION THROTTLED. Attempts logged at ${new Date().toISOString()}`);
-      }
-      throw new Error(`TERMINAL ERROR ${response.status}: ${await response.text()}`);
+    // Handle raw response
+    const rawResponse = await response.text();
+    
+    // Parse response with JSON fallback
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(rawResponse);
+    } catch {
+      parsedResponse = { text: rawResponse };
     }
 
-    // Parse response with enhanced validation
-    const data = await response.json();
-    if (!data?.text?.length) {
-      throw new Error('VOID RESPONSE: The abyss remains silent... for now.');
+    // Validate and sanitize
+    const responseText = parsedResponse?.text || rawResponse;
+    const cleanText = responseText
+      .replace(/[^\x20-\x7E\x09\x0A\x0D]/g, '') // ASCII clean
+      .replace(/(```.*?```)/gs, '') // Remove code blocks
+      .trim();
+
+    if (!cleanText) {
+      throw new Error(`EMPTY RESPONSE: ${rawResponse.slice(0, 24)}...`);
     }
 
-    // Add metadata to response
-    return { 
-      text: `${data.text}\n\n*Last update: ${new Date().toISOString()}*`,
+    // Add corruption pattern
+    const timestamp = Date.now();
+    const hexHash = timestamp.toString(16);
+    const finalText = `${cleanText}\n\n\`// ${hexHash} :: ${timestamp}\``;
+
+    return {
+      text: finalText,
       metadata: {
+        contextHash: btoa(JSON.stringify(recentMessages)),
         seed: request.seed,
-        contextHash: btoa(JSON.stringify(recentMessages))
+        responseType: parsedResponse.text ? 'JSON' : 'RAW'
       }
     };
-    
+
   } catch (error) {
-    console.error('Cascade Failure:', error);
-    return { 
-      error: `${error instanceof Error ? error.message : 'UNKNOWN ERROR'} [${new Date().toISOString()}]`,
-      retainedContext: messages.slice(-3) // Preserve recent context
+    console.error(`CORE DUMP: ${error}`);
+    return {
+      error: `**SYSTEM FAILURE**\n> ${error instanceof Error ? error.message : 'UNKNOWN_ERROR'}\n\n\`// ${Date.now().toString(16)}\``,
+      retainedContext: messages.slice(-CONTEXT_WINDOW)
     };
   }
 }
