@@ -1,5 +1,5 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,35 +7,35 @@
 
 @layer base {
   :root {
-    --background: 210 33% 99%;
-    --foreground: 240 10% 4%;
+    --background: 240 15% 10%;
+    --foreground: 0 0% 90%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
+    --card: 240 15% 10%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
+    --popover: 240 15% 8%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 240 6% 10%;
+    --primary: 0 80% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
+    --secondary: 240 15% 15%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 240 15% 20%;
+    --muted-foreground: 240 4% 70%;
 
-    --accent: 240 5% 96%;
-    --accent-foreground: 240 6% 10%;
+    --accent: 0 80% 50%;
+    --accent-foreground: 0 0% 90%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 90%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 240 6% 90%;
+    --border: 0 60% 30%;
+    --input: 240 15% 18%;
+    --ring: 0 80% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
   }
 
   * {
@@ -53,13 +53,13 @@
   }
   
   ::selection {
-    @apply bg-primary/10 text-primary;
+    @apply bg-red-900/30 text-red-400;
   }
   
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   
   ::-webkit-scrollbar-track {
@@ -67,27 +67,47 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+    @apply bg-red-900/50 rounded-full;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/30;
+    @apply bg-red-900/80;
   }
   
-  /* Custom animations */
-  .animate-in {
-    animation-delay: calc(var(--index) * 100ms);
-    animation-fill-mode: both;
+  /* Terminal cursor effect */
+  .cursor-effect::after {
+    content: "|";
+    @apply text-red-500 animate-pulse;
   }
   
-  /* Glass effect */
-  .glass-effect {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  /* Typewriter effect */
+  .typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 3.5s steps(40, end);
   }
   
-  /* Text balance */
-  .text-balance {
-    text-wrap: balance;
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  
+  /* Glitch effect */
+  .glitch {
+    position: relative;
+    animation: glitch 1s linear infinite;
+  }
+  
+  @keyframes glitch {
+    2%, 64% {
+      transform: translate(2px, 0) skew(0deg);
+    }
+    4%, 60% {
+      transform: translate(-2px, 0) skew(0deg);
+    }
+    62% {
+      transform: translate(0, 0) skew(5deg);
+    }
   }
 }
 
