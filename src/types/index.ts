@@ -11,6 +11,7 @@ export interface ApiRequest {
   messages: Message[];
   model: string;
   seed: number;
+  temperature?: number;
 }
 
 export interface ApiResponse {

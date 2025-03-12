@@ -3,6 +3,7 @@ import React from 'react';
 import { Message } from '../types';
 import { cn } from '@/lib/utils';
 import { User, Skull } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface ChatMessageProps {
   message: Message;
@@ -29,7 +30,23 @@ export const EvilChatMessage = ({ message }: ChatMessageProps) => {
             "px-3 py-2 rounded",
             isUser ? "bg-gray-800/50 border border-gray-700" : "bg-red-900/20 border border-red-900/50"
           )}>
-            <p className="whitespace-pre-wrap">{message.content}</p>
+            {isUser ? (
+              <p className="whitespace-pre-wrap">{message.content}</p>
+            ) : (
+              <ReactMarkdown 
+                className="prose prose-invert prose-sm max-w-none"
+                components={{
+                  a: ({node, ...props}) => <a {...props} className="text-red-400 underline hover:text-red-300" target="_blank" rel="noopener noreferrer" />,
+                  p: ({node, ...props}) => <p {...props} className="mb-2 last:mb-0" />,
+                  ul: ({node, ...props}) => <ul {...props} className="list-disc pl-4 mb-2" />,
+                  ol: ({node, ...props}) => <ol {...props} className="list-decimal pl-4 mb-2" />,
+                  code: ({node, ...props}) => <code {...props} className="bg-black/30 px-1 py-0.5 rounded font-mono text-red-300" />,
+                  pre: ({node, ...props}) => <pre {...props} className="bg-black/30 p-2 rounded font-mono text-red-300 overflow-x-auto mb-2" />
+                }}
+              >
+                {message.content}
+              </ReactMarkdown>
+            )}
           </div>
           {message.timestamp && (
             <span className="text-[10px] opacity-50 mt-1 inline-block">
