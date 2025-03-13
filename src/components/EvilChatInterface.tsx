@@ -32,8 +32,13 @@ export const EvilChatInterface = () => {
   }, [messages]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
   }, [messages]);
+
+  // Function to scroll to bottom of chat
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const visualEffectsInterval = setInterval(() => {
@@ -186,7 +191,8 @@ export const EvilChatInterface = () => {
       
       <div 
         ref={messageContainerRef}
-        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent py-4 px-4 font-serif text-sm z-20"
+        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent py-4 px-4 font-serif text-sm z-20 h-full"
+        style={{ maxHeight: 'calc(100vh - 140px)', overflowY: 'auto' }}
       >
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500 gap-4">
@@ -204,12 +210,14 @@ export const EvilChatInterface = () => {
             </div>
           </div>
         ) : (
-          messages.map((message, index) => (
-            <EvilChatMessage key={index} message={message} />
-          ))
+          <div className="min-h-full">
+            {messages.map((message, index) => (
+              <EvilChatMessage key={index} message={message} />
+            ))}
+            {isLoading && <TypingIndicator />}
+            <div ref={messagesEndRef} className="h-4" />
+          </div>
         )}
-        {isLoading && <TypingIndicator />}
-        <div ref={messagesEndRef} />
       </div>
       
       <form 
