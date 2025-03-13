@@ -12,6 +12,7 @@ export interface ApiRequest {
   model: string;
   seed: number;
   temperature?: number;
+  max_tokens?: number;
 }
 
 export interface ApiResponse {
