@@ -14,9 +14,15 @@ export const TypingIndicator = () => {
   }, []);
   
   return (
-    <div className="flex items-center gap-2 text-red-500 opacity-75 animate-pulse mt-2">
-      <Skull className="h-4 w-4" />
-      <span className="font-mono text-xs">V01D is thinking{dots}</span>
+    <div className="flex items-center gap-2 text-red-500 mt-2 animate-pulse">
+      <div className="relative">
+        <Skull className="h-4 w-4" />
+        <Skull className="absolute inset-0 h-4 w-4 text-green-500 opacity-30 blur-[1px]" />
+      </div>
+      <div className="font-mono text-xs relative">
+        <span>V01D is thinking{dots}</span>
+        <span className="absolute inset-0 text-green-500 opacity-30 blur-[1px]">V01D is thinking{dots}</span>
+      </div>
     </div>
   );
 };
