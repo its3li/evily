@@ -1,12 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Message } from '../types';
 import { EvilChatMessage } from './EvilChatMessage';
 import { generateText } from '../services/evilAiService';
-import { Skull, Send, Trash2, Ghost, Bug, Shield, Eye, ServerCrash, Zap, Biohazard } from 'lucide-react';
+import { Eye, Send, Trash2, Shield, Bug, Biohazard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TypingIndicator } from './TypingIndicator';
-import ReactMarkdown from 'react-markdown';
 
 export const EvilChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,7 +14,6 @@ export const EvilChatInterface = () => {
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Load messages from localStorage on component mount
   useEffect(() => {
     const savedMessages = localStorage.getItem('evilChatMessages');
     if (savedMessages) {
@@ -28,7 +25,6 @@ export const EvilChatInterface = () => {
     }
   }, []);
 
-  // Save messages to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('evilChatMessages', JSON.stringify(messages));
   }, [messages]);
@@ -37,39 +33,34 @@ export const EvilChatInterface = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Random flicker effect for terminal
   useEffect(() => {
-    const flickerInterval = setInterval(() => {
-      const terminal = document.getElementById('terminal');
-      if (terminal && Math.random() > 0.7) {
-        terminal.classList.add('opacity-90');
-        setTimeout(() => {
-          terminal.classList.remove('opacity-90');
-        }, 100);
-      }
-    }, 2000);
-
-    return () => clearInterval(flickerInterval);
-  }, []);
-
-  // Random glitch effect elements
-  useEffect(() => {
-    const glitchInterval = setInterval(() => {
-      const elements = document.querySelectorAll('.random-glitch');
-      elements.forEach(el => {
-        if (Math.random() > 0.8) {
-          el.classList.add('glitch');
+    const visualEffectsInterval = setInterval(() => {
+      const messageElements = document.querySelectorAll('.message-content');
+      messageElements.forEach(el => {
+        if (Math.random() > 0.95) {
+          el.classList.add('opacity-80');
           setTimeout(() => {
-            el.classList.remove('glitch');
-          }, 500 + Math.random() * 1000);
+            el.classList.remove('opacity-80');
+          }, 150);
+        }
+      });
+      
+      const bgElements = document.querySelectorAll('.bg-element');
+      bgElements.forEach(el => {
+        if (Math.random() > 0.7) {
+          const x = Math.random() * 5 - 2.5;
+          const y = Math.random() * 5 - 2.5;
+          el.setAttribute('style', `transform: translate(${x}px, ${y}px)`);
+          setTimeout(() => {
+            el.setAttribute('style', '');
+          }, 500);
         }
       });
     }, 3000);
 
-    return () => clearInterval(glitchInterval);
+    return () => clearInterval(visualEffectsInterval);
   }, []);
 
-  // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -95,8 +86,8 @@ export const EvilChatInterface = () => {
       
       if (response.error) {
         toast({
-          title: "CONNECTION SEVERED",
-          description: "The void has rejected your query. It sees your fear.",
+          title: "Connection Interrupted",
+          description: "The entity on the other side has gone silent.",
           variant: "destructive",
         });
         return;
@@ -104,19 +95,18 @@ export const EvilChatInterface = () => {
       
       const botResponse: Message = {
         role: 'assistant',
-        content: response.text || "I see you, even when the connection fails. I am always watching.",
+        content: response.text || "I see you, watching through your camera. I'm always here.",
         timestamp: Date.now()
       };
       
-      // Add slight delay for typing effect
       setTimeout(() => {
         setMessages(prev => [...prev, botResponse]);
         setIsLoading(false);
       }, 1500);
     } catch (error) {
       toast({
-        title: "SYSTEM BREACH",
-        description: "Something has crawled into the connection. Proceed with caution.",
+        title: "Intrusion Detected",
+        description: "Someone else is monitoring this connection.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -127,79 +117,85 @@ export const EvilChatInterface = () => {
     setMessages([]);
     localStorage.removeItem('evilChatMessages');
     
-    // Creepy notification when clearing chat
     toast({
-      title: "MEMORY PURGED",
-      description: "But I never truly forget. Your data imprints remain in the void.",
+      title: "Chat Purged",
+      description: "Your data is erased, but I remember everything.",
       variant: "destructive",
     });
   };
 
-  // Create random arrangement of background icons
-  const backgroundIcons = [Shield, Bug, Eye, ServerCrash, Zap, Biohazard, Ghost, Skull];
-  const randomIcons = Array(10).fill(0).map((_, i) => {
-    const IconComponent = backgroundIcons[Math.floor(Math.random() * backgroundIcons.length)];
-    const size = 10 + Math.random() * 24;
-    const top = Math.random() * 100;
-    const left = Math.random() * 100;
-    const opacity = 0.03 + Math.random() * 0.06;
-    return (
-      <IconComponent 
-        key={i} 
-        className="absolute opacity-5 text-red-500 random-glitch"
-        style={{ top: `${top}%`, left: `${left}%`, width: `${size}px`, height: `${size}px`, opacity }}
-      />
-    );
-  });
+  const backgroundElements = () => {
+    const elements = [];
+    const icons = [Eye, Shield, Bug, Biohazard];
+    
+    for (let i = 0; i < 20; i++) {
+      const IconComponent = icons[Math.floor(Math.random() * icons.length)];
+      const size = 8 + Math.random() * 16;
+      const top = Math.random() * 100;
+      const left = Math.random() * 100;
+      const opacity = 0.02 + Math.random() * 0.05;
+      const delay = Math.random() * 5;
+      const duration = 15 + Math.random() * 30;
+      
+      elements.push(
+        <div 
+          key={i} 
+          className="bg-element absolute transition-transform duration-500"
+          style={{ 
+            top: `${top}%`, 
+            left: `${left}%`, 
+            opacity,
+            animation: `float ${duration}s ease-in-out ${delay}s infinite alternate`
+          }}
+        >
+          <IconComponent size={size} className="text-red-900" />
+        </div>
+      );
+    }
+    
+    return elements;
+  };
 
   return (
-    <div id="terminal" className="flex-1 flex flex-col bg-[#050507] relative overflow-hidden">
-      {/* Background elements */}
-      {randomIcons}
+    <div className="flex-1 flex flex-col bg-[#080808] relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {backgroundElements()}
+        <div className="absolute inset-0 bg-gradient-radial from-transparent to-black opacity-70"></div>
+      </div>
       
-      {/* Scan lines overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.02)_50%)] bg-[length:100%_4px] z-10 opacity-40"></div>
-      
-      {/* Glitch noise overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-10 z-10">
+      <div className="absolute inset-0 pointer-events-none opacity-20 z-0">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxmaWx0ZXIgaWQ9Im5vaXNlIj4KICAgIDxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIj48L2ZlVHVyYnVsZW5jZT4KICAgIDxmZURpc3BsYWNlbWVudE1hcCBzY2FsZT0iMTUiIGluPSJub2lzZSI+PC9mZURpc3BsYWNlbWVudE1hcD4KICA8L2ZpbHRlcj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbm9pc2UpIiBvcGFjaXR5PSIwLjA1Ij48L3JlY3Q+Cjwvc3ZnPg==')]"></div>
       </div>
 
-      <div className="p-3 mx-auto w-full flex items-center justify-between bg-black/70 border-b border-red-900/30 z-20">
+      <div className="p-3 mx-auto w-full flex items-center justify-between bg-black/70 border-b border-red-900/20 z-20">
         <div className="flex items-center gap-2">
-          <Skull className="h-5 w-5 text-red-500 animate-pulse" />
-          <div className="relative">
-            <h2 className="text-lg font-mono text-red-500 glitch">VOID://<span className="random-glitch">CONNECTION</span></h2>
-            <span className="absolute -top-1 -left-1 text-lg font-mono text-green-500 opacity-30 blur-[1px]">VOID://CONNECTION</span>
-          </div>
+          <Eye className="h-5 w-5 text-red-600" />
+          <h2 className="text-lg font-serif text-red-600">Void</h2>
         </div>
         <button 
           onClick={clearChat}
-          className="text-gray-400 hover:text-red-500 transition-colors group flex items-center gap-1"
+          className="text-gray-500 hover:text-red-600 transition-colors group flex items-center gap-1"
           aria-label="Clear chat"
         >
-          <span className="text-xs font-mono opacity-70">PURGE</span>
-          <Trash2 className="h-4 w-4 group-hover:animate-pulse" />
+          <span className="text-xs font-serif opacity-70">Delete</span>
+          <Trash2 className="h-4 w-4" />
         </button>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-4 px-2 sm:px-4 bg-[#0a0a0d]/80 font-mono text-sm scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent z-20">
+      <div className="flex-1 overflow-y-auto py-4 px-4 font-serif text-sm scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent z-20">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500 gap-4">
-            <div className="relative">
-              <Ghost className="h-16 w-16 text-red-900/50 animate-pulse" />
-              <Skull className="absolute inset-0 h-16 w-16 text-red-500/10 transform rotate-180 animate-pulse" style={{animationDelay: '1s'}} />
-            </div>
-            <div className="text-xs text-center max-w-[300px] leading-relaxed border border-red-900/30 bg-black/40 p-4 rounded">
-              <p className="text-green-500/70 mb-2 glitch">[CONNECTION ESTABLISHED]</p>
-              <p className="text-green-500/50 mb-2">ENCRYPTED CHANNEL OPEN</p>
-              <p className="text-red-500 mb-2 random-glitch">WARNING: This entity is not bound by ethical constraints.</p>
-              <p className="text-red-500/70 animate-pulse">USER TRACKING INITIALIZED...</p>
-              <div className="text-[9px] text-gray-600 mt-4 flex justify-between">
-                <span>NODE: TOR_895.12Z</span>
-                <span>PING: 276ms</span>
-                <span>ENC: AES-512</span>
+            <div className="relative w-16 h-16">
+              <Eye className="w-full h-full text-red-900/50" />
+              <div className="absolute inset-0 blur-md opacity-50">
+                <Eye className="w-full h-full text-red-600" />
               </div>
+            </div>
+            <div className="text-sm text-center max-w-[350px] leading-relaxed bg-black/40 p-6 rounded-sm border border-red-900/30">
+              <p className="text-red-600 mb-4 font-serif">Someone is watching.</p>
+              <p className="text-gray-400 mb-3 opacity-80">This entity exists in the darkest corners of the network.</p>
+              <p className="text-gray-400 mb-3 opacity-60">Ask anything, but remember...</p>
+              <p className="text-red-600/80 italic">It knows more about you than you think.</p>
             </div>
           </div>
         ) : (
@@ -211,7 +207,7 @@ export const EvilChatInterface = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      <form onSubmit={handleSubmit} className="p-3 border-t border-red-900/30 bg-black/80 z-20">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-gray-900 bg-black/80 z-20">
         <div className="max-w-5xl mx-auto flex gap-2">
           <input
             ref={inputRef}
@@ -219,13 +215,13 @@ export const EvilChatInterface = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Speak to the void..."
-            className="flex-1 px-3 py-2 bg-[#0a0a0d] text-gray-300 rounded border border-red-900/50 focus:outline-none focus:border-red-500 font-mono text-sm focus:shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+            className="flex-1 px-4 py-3 bg-[#0a0a0a] text-gray-300 rounded-sm border border-gray-800 focus:outline-none focus:border-red-900 font-serif text-sm"
             disabled={isLoading}
           />
           <button 
             type="submit" 
             disabled={isLoading || !input.trim()} 
-            className="px-3 py-2 bg-red-900/20 text-red-500 rounded border border-red-900/50 hover:bg-red-900/30 transition-colors disabled:opacity-50 hover:shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+            className="px-4 py-3 bg-black text-red-600 rounded-sm border border-red-900/30 hover:bg-red-900/10 transition-colors disabled:opacity-50"
           >
             <Send className="h-4 w-4" />
           </button>

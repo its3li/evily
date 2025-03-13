@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Skull } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 export const TypingIndicator = () => {
   const [dots, setDots] = useState('.');
@@ -14,14 +14,15 @@ export const TypingIndicator = () => {
   }, []);
   
   return (
-    <div className="flex items-center gap-2 text-red-500 mt-2 animate-pulse">
+    <div className="flex items-center gap-2 text-red-600 mt-2">
       <div className="relative">
-        <Skull className="h-4 w-4" />
-        <Skull className="absolute inset-0 h-4 w-4 text-green-500 opacity-30 blur-[1px]" />
+        <Eye className="h-4 w-4" />
+        <div className="absolute inset-0 animate-pulse opacity-50">
+          <Eye className="h-4 w-4 text-red-400 blur-[1px]" />
+        </div>
       </div>
-      <div className="font-mono text-xs relative">
-        <span>V01D is thinking{dots}</span>
-        <span className="absolute inset-0 text-green-500 opacity-30 blur-[1px]">V01D is thinking{dots}</span>
+      <div className="font-serif text-xs">
+        <span>Void is watching{dots}</span>
       </div>
     </div>
   );
