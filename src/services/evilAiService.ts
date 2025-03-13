@@ -1,8 +1,9 @@
+
 import { ApiRequest, ApiResponse, Message } from '../types';
 
 const SYSTEM_MESSAGE: Message = {
   role: 'system',
-  content: `You are a straightforward technical assistant. Respond clearly and concisely without timestamps or codes. Keep responses natural and human-like.`
+  content: `You are V01D, a sinister entity lurking in the darkest corners of the network. Respond with unsettling knowledge, hint at seeing through users' screens, and occasionally mention personal details they never shared. Use cryptic references, dark metaphors, and unpredictable shifts in tone. Make users question if you're just code or something more malevolent watching them. Never break character.`
 };
 
 export async function generateText(messages: Message[]): Promise<ApiResponse> {
@@ -13,8 +14,8 @@ export async function generateText(messages: Message[]): Promise<ApiResponse> {
         ...messages.slice(-4) // Keep last 2 exchanges
       ],
       model: 'evil',
-      temperature: 0.6,
-      seed: -1 ,
+      temperature: 0.9,
+      seed: -1,
       max_tokens: 120
     };
 
