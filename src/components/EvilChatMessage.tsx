@@ -2,7 +2,7 @@
 import React from 'react';
 import { Message } from '../types';
 import { cn } from '@/lib/utils';
-import { User, Eye } from 'lucide-react';
+import { User, Eye, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 interface ChatMessageProps {
@@ -51,7 +51,10 @@ export const EvilChatMessage = ({ message }: ChatMessageProps) => {
                     ul: ({node, ...props}) => <ul {...props} className="list-disc pl-4 mb-2" />,
                     ol: ({node, ...props}) => <ol {...props} className="list-decimal pl-4 mb-2" />,
                     code: ({node, ...props}) => <code {...props} className="bg-black/50 px-1 py-0.5 rounded font-mono text-red-400" />,
-                    pre: ({node, ...props}) => <pre {...props} className="bg-black/50 p-2 rounded font-mono text-red-400 overflow-x-auto mb-2" />
+                    pre: ({node, children, ...props}) => {
+                      const childString = children?.toString() || '';
+                      return <CodeBlock content={childString} {...props} />;
+                    }
                   }}
                 >
                   {message.content}
@@ -74,6 +77,39 @@ export const EvilChatMessage = ({ message }: ChatMessageProps) => {
           )}
         </div>
       </div>
+    </div>
+  );
+};
+
+// New component for code blocks with copy button
+const CodeBlock = ({ content, ...props }: { content: string }) => {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative my-3 rounded-sm overflow-hidden">
+      <div className="flex justify-between items-center bg-red-900/20 py-1 px-3">
+        <span className="text-xs font-mono text-red-400/80">CODE</span>
+        <button
+          onClick={handleCopy}
+          className="p-1.5 rounded hover:bg-black/20 transition-colors"
+          aria-label="Copy code"
+        >
+          {copied ? (
+            <Check className="h-3.5 w-3.5 text-green-500" />
+          ) : (
+            <Copy className="h-3.5 w-3.5 text-red-400/70" />
+          )}
+        </button>
+      </div>
+      <pre className="bg-black/50 p-3 overflow-x-auto scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent">
+        <code className="text-xs text-red-400 font-mono">{content}</code>
+      </pre>
     </div>
   );
 };

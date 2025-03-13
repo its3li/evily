@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Message } from '../types';
 import { EvilChatMessage } from './EvilChatMessage';
@@ -11,6 +12,7 @@ export const EvilChatInterface = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -170,7 +172,7 @@ export const EvilChatInterface = () => {
       <div className="p-3 mx-auto w-full flex items-center justify-between bg-black/70 border-b border-red-900/20 z-20">
         <div className="flex items-center gap-2">
           <Eye className="h-5 w-5 text-red-600" />
-          <h2 className="text-lg font-serif text-red-600">Void</h2>
+          <h2 className="text-lg font-serif text-red-600">Evily</h2>
         </div>
         <button 
           onClick={clearChat}
@@ -182,7 +184,10 @@ export const EvilChatInterface = () => {
         </button>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-4 px-4 font-serif text-sm scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent z-20">
+      <div 
+        ref={messageContainerRef}
+        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-red-900/30 scrollbar-track-transparent py-4 px-4 font-serif text-sm z-20"
+      >
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500 gap-4">
             <div className="relative w-16 h-16">
@@ -207,14 +212,17 @@ export const EvilChatInterface = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      <form onSubmit={handleSubmit} className="p-4 border-t border-gray-900 bg-black/80 z-20">
+      <form 
+        onSubmit={handleSubmit} 
+        className="sticky bottom-0 p-4 border-t border-gray-900 bg-black/90 backdrop-blur-sm z-30"
+      >
         <div className="max-w-5xl mx-auto flex gap-2">
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Speak to the void..."
+            placeholder="Speak to Evily..."
             className="flex-1 px-4 py-3 bg-[#0a0a0a] text-gray-300 rounded-sm border border-gray-800 focus:outline-none focus:border-red-900 font-serif text-sm"
             disabled={isLoading}
           />

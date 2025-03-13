@@ -60,8 +60,8 @@
   
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
   }
   
   ::-webkit-scrollbar-track {
@@ -69,11 +69,11 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-red-900/30 rounded-full;
+    @apply bg-red-900/40 rounded-full;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-red-900/50;
+    @apply bg-red-900/60;
   }
   
   /* Floating animation */
@@ -92,6 +92,24 @@
   /* Radial gradient */
   .bg-gradient-radial {
     background-image: radial-gradient(var(--tw-gradient-stops));
+  }
+
+  /* Custom scrollbar for code blocks */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .scrollbar-thumb-red-900\/30::-webkit-scrollbar-thumb {
+    @apply bg-red-900/30;
+  }
+  
+  .scrollbar-thumb-red-900\/30::-webkit-scrollbar-thumb:hover {
+    @apply bg-red-900/50;
+  }
+  
+  .scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
