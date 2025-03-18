@@ -15,7 +15,7 @@ Let seed = math.floor(Math.random() 10000) ;
       ],
       model: 'evil',
       temperature: 0.9,
-      seed: -1,
+      seed: seed,
       max_tokens: 120
     };
 
